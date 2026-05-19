@@ -513,7 +513,7 @@
             `;
         });
 
-        // =========================================================================
+       // =========================================================================
         // 4. FUNÇÃO DE REPRODUÇÃO DE ÁUDIO
         // =========================================================================
         function playSound(audioId, symbol) {
@@ -521,11 +521,16 @@
             if (audioElement && audioElement.getAttribute('src') !== 'undefined' && audioElement.getAttribute('src') !== '') {
                 audioElement.pause();
                 audioElement.currentTime = 0;
-                audioElement.play().catch(error => {
-                    console.warn(`[Aviso] Áudio não encontrado: ${audioElement.src}`);
-                });
+                
+                // Tenta tocar o áudio
+                let playPromise = audioElement.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        // Se falhar (no iPhone ou PC), mostra um aviso na tela
+                        alert(`Não foi possível reproduzir o som.\n\nSe estiver no iPhone, tire do Modo Silencioso.\nVerifique se o arquivo de áudio existe no servidor.`);
+                        console.warn(`[Aviso] Erro no áudio: ${audioElement.src}`, error);
+                    });
+                }
             }
         }
-    </script>
-</body>
-</html>
